@@ -45,12 +45,6 @@ export default function Dashboard() {
               </p>
             </div>
             <div className="flex items-center space-x-4">
-              <Link href="/role-demo">
-                <Button variant="outline" className="border-purple-200 text-purple-700 hover:bg-purple-50">
-                  <Shield className="w-4 h-4 mr-2" />
-                  ตัวอย่างสิทธิ์
-                </Button>
-              </Link>
               <button className="relative p-2 text-gray-400 hover:text-gray-600">
                 <AlertTriangle className="w-5 h-5" />
                 <span className="absolute -top-1 -right-1 h-4 w-4 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">

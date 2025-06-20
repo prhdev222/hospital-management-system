@@ -153,41 +153,10 @@ export default function Login({ onLoginSuccess }: LoginProps) {
               </Button>
             </form>
             
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-white px-2 text-muted-foreground">หรือเลือกบทบาท</span>
-              </div>
-            </div>
-            
-            <div className="grid grid-cols-1 gap-2">
-              {predefinedUsers.map((user) => {
-                const Icon = user.icon;
-                return (
-                  <Button
-                    key={user.username}
-                    variant="outline"
-                    onClick={() => handleQuickLogin(user)}
-                    className="justify-start"
-                    disabled={loginMutation.isPending}
-                  >
-                    <Icon className={`w-4 h-4 mr-2 ${user.color}`} />
-                    {user.name} ({user.username})
-                  </Button>
-                );
-              })}
-            </div>
           </CardContent>
         </Card>
         
-        <div className="mt-6 text-center text-sm text-gray-500">
-          <p>บัญชีทดสอบ:</p>
-          <p>Admin: 1111 / admin123</p>
-          <p>Doctor: 2222 / doctor123</p>
-          <p>Nurse: 3333 / nurse123</p>
-        </div>
+
       </div>
     </div>
   );
