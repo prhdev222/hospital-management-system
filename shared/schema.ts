@@ -74,6 +74,8 @@ export const labResults = pgTable("lab_results", {
   testType: varchar("test_type").notNull(), // CBC, BUN, Creatinine, etc.
   results: jsonb("results").notNull(), // Store lab values as JSON
   testDate: date("test_date").notNull(),
+  status: varchar("status").default("completed"),
+  notes: text("notes"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 

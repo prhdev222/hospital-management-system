@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { Plus, Search, Edit, TestTube, Calendar, TrendingUp, AlertCircle } from "lucide-react";
+import { Plus, Search, Edit, TestTube, Calendar, TrendingUp, AlertCircle, Printer, FileText } from "lucide-react";
 import Sidebar from "@/components/Sidebar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,6 +23,82 @@ export default function LabResults() {
     testDate: "",
   });
   const { toast } = useToast();
+
+  // Function to format JSON results as readable text
+  const formatLabResultAsText = (result: LabResult & { patient?: Patient }) => {
+    let text = `ผลการตรวจทางห้องปฏิบัติการ\n`;
+    text += `ประจำวันที่: ${new Date(result.testDate).toLocaleDateString('th-TH')}\n`;
+    text += `ผู้ป่วย: ${result.patient?.firstName || ''} ${result.patient?.lastName || ''}\n`;
+    text += `HN: ${result.patient?.hn || ''}\n`;
+    text += `ประเภทการตรวจ: ${result.testType}\n`;
+    text += `\n=== ผลการตรวจ ===\n`;
+    
+    try {
+      const jsonResults = typeof result.results === 'string' 
+        ? JSON.parse(result.results) 
+        : result.results;
+      
+      if (typeof jsonResults === 'object' && jsonResults !== null) {
+        Object.entries(jsonResults).forEach(([key, value]) => {
+          text += `${key}: ${value}\n`;
+        });
+      } else {
+        text += `${jsonResults}\n`;
+      }
+    } catch (e) {
+      text += `${result.results}\n`;
+    }
+    
+    text += `\nสถานะ: ${result.status || 'เสร็จสิ้น'}\n`;
+    if (result.notes) {
+      text += `หมายเหตุ: ${result.notes}\n`;
+    }
+    text += `\nวันที่บันทึก: ${new Date(result.createdAt || '').toLocaleDateString('th-TH')}\n`;
+    
+    return text;
+  };
+
+  // Function to print lab result as text
+  const printLabResult = (result: LabResult & { patient?: Patient }) => {
+    const textContent = formatLabResultAsText(result);
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      printWindow.document.write(`
+        <html>
+          <head>
+            <title>ผลการตรวจ - ${result.patient?.firstName} ${result.patient?.lastName}</title>
+            <style>
+              body { font-family: 'Sarabun', Arial, sans-serif; margin: 20px; line-height: 1.6; }
+              pre { white-space: pre-wrap; font-family: inherit; }
+            </style>
+          </head>
+          <body>
+            <pre>${textContent}</pre>
+          </body>
+        </html>
+      `);
+      printWindow.document.close();
+      printWindow.print();
+    }
+  };
+
+  // Function to format JSON for display
+  const formatJsonForDisplay = (jsonString: string) => {
+    try {
+      const parsed = typeof jsonString === 'string' ? JSON.parse(jsonString) : jsonString;
+      if (typeof parsed === 'object' && parsed !== null) {
+        return Object.entries(parsed).map(([key, value]) => (
+          <div key={key} className="flex justify-between py-1">
+            <span className="font-medium text-gray-700">{key}:</span>
+            <span className="text-gray-900">{String(value)}</span>
+          </div>
+        ));
+      }
+      return <span>{String(parsed)}</span>;
+    } catch (e) {
+      return <span>{jsonString}</span>;
+    }
+  };
 
   const { data: patients = [] } = useQuery<Patient[]>({
     queryKey: ["/api/patients"],
@@ -315,20 +391,97 @@ export default function LabResults() {
                       </div>
                       
                       <div className="border-t border-gray-200 pt-4">
-                        <h4 className="text-sm font-medium text-gray-700 mb-3">ผลการตรวจ:</h4>
-                        {renderLabValues(result.results, result.testType)}
+                        <h4 className="text-sm font-medium text-gray-700 mb-3">ผลการตรวจ (JSON):</h4>
+                        <div className="bg-gray-50 p-3 rounded-lg border">
+                          {formatJsonForDisplay(result.results)}
+                        </div>
                       </div>
+
+                      {result.notes && (
+                        <div className="pt-3 border-t border-gray-200">
+                          <h4 className="text-sm font-medium text-gray-700 mb-2">หมายเหตุ:</h4>
+                          <p className="text-sm text-gray-600">{result.notes}</p>
+                        </div>
+                      )}
 
                       <div className="pt-3 border-t border-gray-200">
                         <div className="flex space-x-2">
-                          <Button size="sm" variant="outline" className="flex-1">
-                            <TrendingUp className="w-3 h-3 mr-1" />
-                            เทรนด์
+                          <Button 
+                            size="sm" 
+                            variant="outline" 
+                            className="flex-1"
+                            onClick={() => printLabResult(result)}
+                          >
+                            <Printer className="w-3 h-3 mr-1" />
+                            พิมพ์ผล
                           </Button>
-                          <Button size="sm" variant="outline" className="flex-1">
-                            <Calendar className="w-3 h-3 mr-1" />
-                            ประวัติการตรวจ
-                          </Button>
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <Button size="sm" variant="outline" className="flex-1">
+                                <FileText className="w-3 h-3 mr-1" />
+                                ดู JSON
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent className="max-w-2xl">
+                              <DialogHeader>
+                                <DialogTitle>ผลการตรวจ JSON - {result.patient?.firstName} {result.patient?.lastName}</DialogTitle>
+                              </DialogHeader>
+                              <div className="space-y-4">
+                                <div>
+                                  <Label className="text-sm font-medium">ข้อมูลผู้ป่วย:</Label>
+                                  <div className="mt-1 text-sm text-gray-600">
+                                    {result.patient?.firstName} {result.patient?.lastName} (HN: {result.patient?.hn})
+                                  </div>
+                                </div>
+                                <div>
+                                  <Label className="text-sm font-medium">ประเภทการตรวจ:</Label>
+                                  <div className="mt-1 text-sm text-gray-600">{result.testType}</div>
+                                </div>
+                                <div>
+                                  <Label className="text-sm font-medium">วันที่ตรวจ:</Label>
+                                  <div className="mt-1 text-sm text-gray-600">
+                                    {new Date(result.testDate).toLocaleDateString('th-TH')}
+                                  </div>
+                                </div>
+                                <div>
+                                  <Label className="text-sm font-medium">ผลการตรวจ (JSON):</Label>
+                                  <pre className="mt-2 p-3 bg-gray-50 rounded-lg border text-sm overflow-auto max-h-64">
+                                    {JSON.stringify(
+                                      typeof result.results === 'string' 
+                                        ? JSON.parse(result.results) 
+                                        : result.results, 
+                                      null, 
+                                      2
+                                    )}
+                                  </pre>
+                                </div>
+                                <div className="flex justify-end space-x-2">
+                                  <Button 
+                                    variant="outline" 
+                                    onClick={() => {
+                                      navigator.clipboard.writeText(JSON.stringify(
+                                        typeof result.results === 'string' 
+                                          ? JSON.parse(result.results) 
+                                          : result.results, 
+                                        null, 
+                                        2
+                                      ));
+                                      toast({
+                                        title: "คัดลอกแล้ว",
+                                        description: "คัดลอก JSON ไปยังคลิปบอร์ดแล้ว",
+                                      });
+                                    }}
+                                  >
+                                    คัดลอก JSON
+                                  </Button>
+                                  <Button onClick={() => printLabResult(result)}>
+                                    <Printer className="w-4 h-4 mr-2" />
+                                    พิมพ์เป็น Text
+                                  </Button>
+                                </div>
+                              </div>
+                            </DialogContent>
+                          </Dialog>
                         </div>
                       </div>
                     </div>
