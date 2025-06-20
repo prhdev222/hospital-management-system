@@ -21,6 +21,8 @@ export default function LabResults() {
     testType: "",
     results: {},
     testDate: "",
+    treatmentPhase: "",
+    notes: "",
   });
   const { toast } = useToast();
 
@@ -129,7 +131,7 @@ export default function LabResults() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/lab-results"] });
       setIsAddDialogOpen(false);
-      setNewResult({ patientId: 0, testType: "", results: {}, testDate: "" });
+      setNewResult({ patientId: 0, testType: "", results: {}, testDate: "", treatmentPhase: "", notes: "" });
       toast({
         title: "สำเร็จ",
         description: "เพิ่มผลการตรวจเรียบร้อยแล้ว",
@@ -156,6 +158,13 @@ export default function LabResults() {
         return <TestTube className="w-4 h-4 text-purple-600" />;
       case "tumor_marker":
         return <TrendingUp className="w-4 h-4 text-orange-600" />;
+      case "xray":
+      case "ct_scan":
+      case "mri":
+      case "pet_scan":
+        return <Search className="w-4 h-4 text-green-600" />;
+      case "bone_marrow":
+        return <AlertCircle className="w-4 h-4 text-red-700" />;
       default:
         return <TestTube className="w-4 h-4 text-gray-600" />;
     }
@@ -174,6 +183,11 @@ export default function LabResults() {
       echocardiogram: "Echocardiogram",
       b2microglobulin: "β2-Microglobulin",
       viral_studies: "Viral Studies",
+      xray: "X-ray",
+      ct_scan: "CT Scan",
+      mri: "MRI",
+      pet_scan: "PET Scan",
+      bone_marrow: "Bone Marrow Study",
     };
     return typeMap[testType.toLowerCase()] || testType;
   };
@@ -289,6 +303,26 @@ export default function LabResults() {
                         <SelectItem value="viral_studies">Viral Studies</SelectItem>
                         <SelectItem value="echocardiogram">Echocardiogram</SelectItem>
                         <SelectItem value="b2microglobulin">β2-Microglobulin</SelectItem>
+                        <SelectItem value="xray">X-ray</SelectItem>
+                        <SelectItem value="ct_scan">CT Scan</SelectItem>
+                        <SelectItem value="mri">MRI</SelectItem>
+                        <SelectItem value="pet_scan">PET Scan</SelectItem>
+                        <SelectItem value="bone_marrow">Bone Marrow Study</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <Label>ช่วงเวลาการรักษา</Label>
+                    <Select onValueChange={(value) => setNewResult({ ...newResult, treatmentPhase: value })}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="เลือกช่วงเวลา" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="pre_treatment">ก่อนการรักษา</SelectItem>
+                        <SelectItem value="post_treatment">หลังการรักษา</SelectItem>
+                        <SelectItem value="during_treatment">ระหว่างการรักษา</SelectItem>
+                        <SelectItem value="follow_up">ติดตามผล</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>

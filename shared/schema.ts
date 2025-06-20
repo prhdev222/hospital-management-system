@@ -71,11 +71,12 @@ export const diagnoses = pgTable("diagnoses", {
 export const labResults = pgTable("lab_results", {
   id: serial("id").primaryKey(),
   patientId: integer("patient_id").references(() => patients.id).notNull(),
-  testType: varchar("test_type").notNull(), // CBC, BUN, Creatinine, etc.
+  testType: varchar("test_type").notNull(), // CBC, BUN, Creatinine, X-ray, CT, MRI, PET, Bone marrow
   results: jsonb("results").notNull(), // Store lab values as JSON
   testDate: date("test_date").notNull(),
   status: varchar("status").default("completed"),
   notes: text("notes"),
+  treatmentPhase: varchar("treatment_phase"), // "pre_treatment", "post_treatment"
   createdAt: timestamp("created_at").defaultNow(),
 });
 
