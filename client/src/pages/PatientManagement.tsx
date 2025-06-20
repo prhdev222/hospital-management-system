@@ -77,20 +77,22 @@ export default function PatientManagement() {
                 ระบบจัดการข้อมูลผู้ป่วยมะเร็งทางโลหิตวิทยา
               </p>
             </div>
-            <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-              <DialogTrigger asChild>
-                <Button className="bg-medical-green hover:bg-medical-green/90">
-                  <Plus className="w-4 h-4 mr-2" />
-                  เพิ่มผู้ป่วยใหม่
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="max-w-2xl">
-                <DialogHeader>
-                  <DialogTitle>เพิ่มผู้ป่วยใหม่</DialogTitle>
-                </DialogHeader>
-                <PatientForm onSuccess={() => setIsAddDialogOpen(false)} />
-              </DialogContent>
-            </Dialog>
+            {hasPermission("canEditPatients") && (
+              <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button className="bg-medical-green hover:bg-medical-green/90">
+                    <Plus className="w-4 h-4 mr-2" />
+                    เพิ่มผู้ป่วยใหม่
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-2xl">
+                  <DialogHeader>
+                    <DialogTitle>เพิ่มผู้ป่วยใหม่</DialogTitle>
+                  </DialogHeader>
+                  <PatientForm onSuccess={() => setIsAddDialogOpen(false)} />
+                </DialogContent>
+              </Dialog>
+            )}
           </div>
         </header>
 
