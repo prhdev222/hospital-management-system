@@ -73,7 +73,7 @@ const rolePermissions: Record<UserRole, RolePermissions> = {
 export function useRoleAccess() {
   const { user } = useAuth();
   
-  const userRole = (user?.role as UserRole) || "nurse";
+  const userRole = ((user as any)?.role as UserRole) || "doctor";
   const permissions = rolePermissions[userRole];
 
   const hasPermission = (permission: keyof RolePermissions): boolean => {

@@ -75,7 +75,7 @@ export default function Sidebar() {
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-medium text-gray-900 truncate">
-              {user?.firstName || ''} {user?.lastName || ''}
+              {(user as any)?.firstName || ''} {(user as any)?.lastName || ''}
             </p>
             <Badge 
               className={`text-xs ${getRoleColor(userRole)}`}
@@ -90,7 +90,7 @@ export default function Sidebar() {
 
       {/* Navigation Menu */}
       <nav className="flex-1 p-4 space-y-2">
-        {navigation.map((item) => {
+        {filteredNavigation.map((item) => {
           const Icon = item.icon;
           const isActive = location === item.href || 
                           (item.href === "/" && location === "/dashboard");

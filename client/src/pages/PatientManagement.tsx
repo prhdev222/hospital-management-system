@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Plus, Search, Edit, Trash2 } from "lucide-react";
+import { useRoleAccess } from "@/hooks/useRoleAccess";
 import Sidebar from "@/components/Sidebar";
 import PatientForm from "@/components/PatientForm";
 import { Button } from "@/components/ui/button";
@@ -18,6 +19,7 @@ export default function PatientManagement() {
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const { toast } = useToast();
+  const { hasPermission, userRole, getRoleDisplayName } = useRoleAccess();
 
   const { data: patients = [], isLoading } = useQuery<Patient[]>({
     queryKey: ["/api/patients", searchQuery],
