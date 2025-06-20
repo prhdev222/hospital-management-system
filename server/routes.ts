@@ -295,6 +295,52 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Lab results routes
+  app.post('/api/lab-results', isAuthenticated, async (req: any, res) => {
+    try {
+      const labResultData = req.body;
+      const labResult = await storage.createLabResult(labResultData);
+      res.json(labResult);
+    } catch (error) {
+      console.error("Error creating lab result:", error);
+      res.status(400).json({ message: "Failed to create lab result" });
+    }
+  });
+
+  app.get('/api/patients/:patientId/lab-results', isAuthenticated, async (req: any, res) => {
+    try {
+      const patientId = parseInt(req.params.patientId);
+      const labResults = await storage.getLabResultsForPatient(patientId);
+      res.json(labResults);
+    } catch (error) {
+      console.error("Error fetching lab results:", error);
+      res.status(500).json({ message: "Failed to fetch lab results" });
+    }
+  });
+
+  // Diagnosis routes
+  app.post('/api/diagnoses', isAuthenticated, async (req: any, res) => {
+    try {
+      const diagnosisData = req.body;
+      const diagnosis = await storage.createDiagnosis(diagnosisData);
+      res.json(diagnosis);
+    } catch (error) {
+      console.error("Error creating diagnosis:", error);
+      res.status(400).json({ message: "Failed to create diagnosis" });
+    }
+  });
+
+  app.get('/api/patients/:patientId/diagnoses', isAuthenticated, async (req: any, res) => {
+    try {
+      const patientId = parseInt(req.params.patientId);
+      const diagnoses = await storage.getDiagnosesForPatient(patientId);
+      res.json(diagnoses);
+    } catch (error) {
+      console.error("Error fetching diagnoses:", error);
+      res.status(500).json({ message: "Failed to fetch diagnoses" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
