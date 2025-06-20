@@ -1,5 +1,6 @@
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
+import { useRoleAccess } from "@/hooks/useRoleAccess";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -19,6 +20,7 @@ import {
 export default function Sidebar() {
   const [location] = useLocation();
   const { user } = useAuth();
+  const { hasPermission, userRole, getRoleDisplayName, getRoleColor } = useRoleAccess();
 
   const navigation = [
     { name: "แดชบอร์ดหอเคมีบำบัด", href: "/", icon: ChartPie },
@@ -30,23 +32,25 @@ export default function Sidebar() {
     { name: "การตั้งค่า", href: "/settings", icon: Settings },
   ];
 
-  const getRoleBadgeColor = (role: string) => {
-    switch (role) {
-      case "admin": return "bg-purple-100 text-purple-800";
-      case "doctor": return "bg-blue-100 text-blue-800";
-      case "nurse": return "bg-green-100 text-green-800";
-      default: return "bg-gray-100 text-gray-800";
+  // Filter navigation based on user permissions
+  const filteredNavigation = navigation.filter(item => {
+    switch (item.href) {
+      case "/patients":
+        return hasPermission("canViewPatients");
+      case "/appointments":
+        return hasPermission("canViewAppointments");
+      case "/treatments":
+        return hasPermission("canViewTreatmentPlans");
+      case "/lab-results":
+        return hasPermission("canViewLabResults");
+      case "/reports":
+        return hasPermission("canViewReports");
+      case "/settings":
+        return hasPermission("canAccessSettings");
+      default:
+        return true; // Dashboard is always accessible
     }
-  };
-
-  const getRoleDisplayName = (role: string) => {
-    switch (role) {
-      case "admin": return "Admin";
-      case "doctor": return "Doctor";
-      case "nurse": return "Nurse";
-      default: return role;
-    }
-  };
+  });
 
   return (
     <div className="w-64 bg-white shadow-lg flex flex-col">
@@ -71,14 +75,14 @@ export default function Sidebar() {
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-medium text-gray-900 truncate">
-              {user?.firstName} {user?.lastName}
+              {user?.firstName || ''} {user?.lastName || ''}
             </p>
             <Badge 
-              className={`text-xs ${getRoleBadgeColor(user?.role || '')}`}
+              className={`text-xs ${getRoleColor(userRole)}`}
               variant="secondary"
             >
               <User className="w-3 h-3 mr-1" />
-              {getRoleDisplayName(user?.role || '')}
+              {getRoleDisplayName(userRole)}
             </Badge>
           </div>
         </div>
