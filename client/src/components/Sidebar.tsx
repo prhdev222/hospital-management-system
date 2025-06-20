@@ -19,7 +19,7 @@ import {
 
 export default function Sidebar() {
   const [location] = useLocation();
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const { hasPermission, userRole, getRoleDisplayName, getRoleColor } = useRoleAccess();
 
   const navigation = [
@@ -124,7 +124,7 @@ export default function Sidebar() {
         <Button 
           variant="outline" 
           className="w-full"
-          onClick={() => window.location.href = '/api/logout'}
+          onClick={logout}
         >
           <LogOut className="w-4 h-4 mr-2" />
           ออกจากระบบ

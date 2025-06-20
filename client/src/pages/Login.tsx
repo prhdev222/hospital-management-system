@@ -36,7 +36,7 @@ const predefinedUsers = [
     color: "text-blue-600"
   },
   {
-    username: "333",
+    username: "3333",
     password: "nurse123", 
     role: "nurse" as UserRole,
     name: "พยาบาล",
@@ -186,7 +186,7 @@ export default function Login({ onLoginSuccess }: LoginProps) {
           <p>บัญชีทดสอบ:</p>
           <p>Admin: 1111 / admin123</p>
           <p>Doctor: 2222 / doctor123</p>
-          <p>Nurse: 333 / nurse123</p>
+          <p>Nurse: 3333 / nurse123</p>
         </div>
       </div>
     </div>

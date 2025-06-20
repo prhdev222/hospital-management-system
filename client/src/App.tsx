@@ -14,14 +14,28 @@ import Appointments from "@/pages/Appointments";
 import Settings from "@/pages/Settings";
 import RoleDemoPage from "@/pages/RoleDemoPage";
 import Landing from "@/pages/Landing";
+import Login from "@/pages/Login";
 
 function Router() {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading, login } = useAuth();
+
+  const handleLogin = (role: any) => {
+    const roleNames = {
+      admin: "ผู้ดูแลระบบ",
+      doctor: "แพทย์", 
+      nurse: "พยาบาล"
+    };
+    login(role, roleNames[role as keyof typeof roleNames]);
+  };
+
+  if (isLoading) {
+    return <div className="flex items-center justify-center h-screen">กำลังโหลด...</div>;
+  }
 
   return (
     <Switch>
-      {isLoading || !isAuthenticated ? (
-        <Route path="/" component={Landing} />
+      {!isAuthenticated ? (
+        <Route path="/" component={() => <Login onLoginSuccess={handleLogin} />} />
       ) : (
         <>
           <Route path="/" component={Dashboard} />
