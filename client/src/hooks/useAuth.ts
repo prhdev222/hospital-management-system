@@ -46,6 +46,8 @@ export function useAuth() {
     localStorage.removeItem('isLoggedIn');
     localStorage.removeItem('userRole');
     localStorage.removeItem('userName');
+    // Force redirect to root path and reload
+    window.location.href = '/';
   };
 
   return {

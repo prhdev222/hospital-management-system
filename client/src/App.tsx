@@ -35,7 +35,10 @@ function Router() {
   return (
     <Switch>
       {!isAuthenticated ? (
-        <Route path="/" component={() => <Login onLoginSuccess={handleLogin} />} />
+        <>
+          <Route path="/" component={() => <Login onLoginSuccess={handleLogin} />} />
+          <Route component={() => <Login onLoginSuccess={handleLogin} />} />
+        </>
       ) : (
         <>
           <Route path="/" component={Dashboard} />
@@ -47,9 +50,9 @@ function Router() {
           <Route path="/reports" component={Reports} />
           <Route path="/settings" component={Settings} />
           <Route path="/role-demo" component={RoleDemoPage} />
+          <Route component={NotFound} />
         </>
       )}
-      <Route component={NotFound} />
     </Switch>
   );
 }
