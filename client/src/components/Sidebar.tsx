@@ -75,7 +75,7 @@ export default function Sidebar() {
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-medium text-gray-900 truncate">
-              {(user as any)?.firstName || ''} {(user as any)?.lastName || ''}
+              {user?.name || 'ผู้ใช้งาน'}
             </p>
             {userRole && (
               <Badge 
