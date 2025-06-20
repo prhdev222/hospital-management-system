@@ -12,6 +12,7 @@ import LabResults from "@/pages/LabResults";
 import Reports from "@/pages/Reports";
 import Appointments from "@/pages/Appointments";
 import Settings from "@/pages/Settings";
+import RoleDemoPage from "@/pages/RoleDemoPage";
 import Landing from "@/pages/Landing";
 
 function Router() {
@@ -31,6 +32,7 @@ function Router() {
           <Route path="/lab-results" component={LabResults} />
           <Route path="/reports" component={Reports} />
           <Route path="/settings" component={Settings} />
+          <Route path="/role-demo" component={RoleDemoPage} />
         </>
       )}
       <Route component={NotFound} />
