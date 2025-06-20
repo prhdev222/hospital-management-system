@@ -77,13 +77,15 @@ export default function Sidebar() {
             <p className="text-sm font-medium text-gray-900 truncate">
               {(user as any)?.firstName || ''} {(user as any)?.lastName || ''}
             </p>
-            <Badge 
-              className={`text-xs ${getRoleColor(userRole)}`}
-              variant="secondary"
-            >
-              <User className="w-3 h-3 mr-1" />
-              {getRoleDisplayName(userRole)}
-            </Badge>
+            {userRole && (
+              <Badge 
+                className={`text-xs ${getRoleColor(userRole)}`}
+                variant="secondary"
+              >
+                <User className="w-3 h-3 mr-1" />
+                {getRoleDisplayName(userRole)}
+              </Badge>
+            )}
           </div>
         </div>
       </div>
