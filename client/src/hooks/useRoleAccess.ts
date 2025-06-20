@@ -73,8 +73,14 @@ const rolePermissions: Record<UserRole, RolePermissions> = {
 export function useRoleAccess() {
   const { user } = useAuth();
   
-  const userRole = ((user as any)?.role as UserRole) || "doctor";
-  const permissions = rolePermissions[userRole];
+  // Get role from localStorage or default to null (requiring selection)
+  const getUserRole = (): UserRole | null => {
+    const savedRole = localStorage.getItem('userRole');
+    return savedRole as UserRole || null;
+  };
+  
+  const userRole = getUserRole();
+  const permissions = userRole ? rolePermissions[userRole] : {} as RolePermissions;
 
   const hasPermission = (permission: keyof RolePermissions): boolean => {
     return permissions[permission];
@@ -98,11 +104,21 @@ export function useRoleAccess() {
     }
   };
 
+  const setUserRole = (role: UserRole) => {
+    localStorage.setItem('userRole', role);
+  };
+
+  const clearUserRole = () => {
+    localStorage.removeItem('userRole');
+  };
+
   return {
     userRole,
     permissions,
     hasPermission,
     getRoleDisplayName,
     getRoleColor,
+    setUserRole,
+    clearUserRole,
   };
 }
