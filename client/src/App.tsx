@@ -35,10 +35,7 @@ function Router() {
   return (
     <Switch>
       {!isAuthenticated ? (
-        <>
-          <Route path="/" component={() => <Login onLoginSuccess={handleLogin} />} />
-          <Route component={() => <Login onLoginSuccess={handleLogin} />} />
-        </>
+        <Route component={() => <Login onLoginSuccess={handleLogin} />} />
       ) : (
         <>
           <Route path="/" component={Dashboard} />
