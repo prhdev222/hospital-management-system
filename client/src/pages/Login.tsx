@@ -114,25 +114,25 @@ export default function Login({ onLoginSuccess }: LoginProps) {
           <CardContent className="space-y-6">
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="username">Username</Label>
+                <Label htmlFor="username">ชื่อผู้ใช้</Label>
                 <Input
                   id="username"
                   type="text"
                   value={credentials.username}
                   onChange={(e) => setCredentials(prev => ({ ...prev, username: e.target.value }))}
-                  placeholder="กรอก username"
+                  placeholder="ชื่อผู้ใช้"
                   disabled={loginMutation.isPending}
                 />
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">รหัสผ่าน</Label>
                 <Input
                   id="password"
                   type="password"
                   value={credentials.password}
                   onChange={(e) => setCredentials(prev => ({ ...prev, password: e.target.value }))}
-                  placeholder="กรอก password"
+                  placeholder="รหัสผ่าน"
                   disabled={loginMutation.isPending}
                 />
               </div>
