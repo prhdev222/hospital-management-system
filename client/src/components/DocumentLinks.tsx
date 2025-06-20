@@ -171,29 +171,7 @@ export default function DocumentLinks() {
           ))
         )}
 
-        {/* Default Drug Information Links */}
-        {groupedLinks.drug_info && (
-          <div className="border-t border-gray-200 pt-3 mt-4">
-            <p className="text-sm font-medium text-gray-700 mb-2">เอกสาร จ.2</p>
-            <div className="space-y-2">
-              {["Rituximab", "Bortezomib", "Imatinib", "Nilotinib", "Dasatinib"].map((drug) => {
-                const drugLink = groupedLinks.drug_info?.find(link => link.title.includes(drug));
-                return (
-                  <a
-                    key={drug}
-                    href={drugLink?.url || "#"}
-                    className="flex items-center space-x-2 text-sm text-medical-blue hover:text-blue-700 transition-colors"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <FileText className="w-3 h-3" />
-                    <span>{drug}</span>
-                  </a>
-                );
-              })}
-            </div>
-          </div>
-        )}
+
       </div>
     </div>
   );
