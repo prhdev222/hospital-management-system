@@ -341,7 +341,13 @@ export default function LabResults() {
                     <textarea
                       className="w-full p-3 border rounded-lg"
                       rows={4}
-                      placeholder='{"wbc": "5.2", "rbc": "4.8", "hgb": "14.2", "hct": "42", "plt": "280"}'
+                      placeholder={
+                        newResult.testType === 'bone_marrow' 
+                          ? '{"cellularity": "90%", "blasts": "15%", "dysplasia": "moderate", "fibrosis": "grade 1"}'
+                          : newResult.testType === 'ct_scan' || newResult.testType === 'mri' || newResult.testType === 'pet_scan' || newResult.testType === 'xray'
+                          ? '{"findings": "No acute abnormalities", "impression": "Normal study", "contrast": "yes"}'
+                          : '{"wbc": "5.2", "rbc": "4.8", "hgb": "14.2", "hct": "42", "plt": "280"}'
+                      }
                       onChange={(e) => {
                         try {
                           const parsed = JSON.parse(e.target.value);
@@ -350,6 +356,17 @@ export default function LabResults() {
                           // Invalid JSON, keep current state
                         }
                       }}
+                    />
+                  </div>
+
+                  <div>
+                    <Label>หมายเหตุ/รายละเอียดเพิ่มเติม</Label>
+                    <textarea
+                      className="w-full p-3 border rounded-lg"
+                      rows={3}
+                      placeholder="รายละเอียดเพิ่มเติม สำหรับการตรวจทางรังสีและ bone marrow study"
+                      value={newResult.notes}
+                      onChange={(e) => setNewResult({ ...newResult, notes: e.target.value })}
                     />
                   </div>
 
@@ -423,6 +440,22 @@ export default function LabResults() {
                         <span className="text-sm font-medium text-gray-600">ประเภทการตรวจ:</span>
                         <Badge variant="secondary">{getTestTypeName(result.testType)}</Badge>
                       </div>
+                      
+                      {result.treatmentPhase && (
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-medium text-gray-600">ช่วงเวลา:</span>
+                          <Badge variant="outline" className={
+                            result.treatmentPhase === 'pre_treatment' ? 'border-blue-500 text-blue-700' :
+                            result.treatmentPhase === 'post_treatment' ? 'border-green-500 text-green-700' :
+                            result.treatmentPhase === 'during_treatment' ? 'border-orange-500 text-orange-700' :
+                            'border-purple-500 text-purple-700'
+                          }>
+                            {result.treatmentPhase === 'pre_treatment' ? 'ก่อนการรักษา' :
+                             result.treatmentPhase === 'post_treatment' ? 'หลังการรักษา' :
+                             result.treatmentPhase === 'during_treatment' ? 'ระหว่างการรักษา' : 'ติดตามผล'}
+                          </Badge>
+                        </div>
+                      )}
                       
                       <div className="border-t border-gray-200 pt-4">
                         <h4 className="text-sm font-medium text-gray-700 mb-3">ผลการตรวจ (JSON):</h4>
