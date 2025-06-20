@@ -393,7 +393,7 @@ export default function LabResults() {
                       <div className="border-t border-gray-200 pt-4">
                         <h4 className="text-sm font-medium text-gray-700 mb-3">ผลการตรวจ (JSON):</h4>
                         <div className="bg-gray-50 p-3 rounded-lg border">
-                          {formatJsonForDisplay(result.results)}
+                          {formatJsonForDisplay(JSON.stringify(result.results))}
                         </div>
                       </div>
 
